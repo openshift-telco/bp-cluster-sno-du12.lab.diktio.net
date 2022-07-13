@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    workload.openshift.io/allowed: management
+  labels:
+    kubernetes.io/metadata.name: openshift-sriov-network-operator
+    openshift.io/run-level: "1"
+  name: openshift-sriov-network-operator
+spec: {}

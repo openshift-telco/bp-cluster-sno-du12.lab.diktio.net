@@ -1,0 +1,25 @@
+---
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: instance
+  namespace: openshift-logging
+spec:
+  inputs:
+  - infrastructure: {}
+    name: infra-logs
+  outputs:
+  - name: kafka-open
+    type: kafka
+    url: tcp://10.46.55.190:9092/test
+  pipelines:
+  - inputRefs:
+    - audit
+    name: audit-logs
+    outputRefs:
+    - kafka-open
+  - inputRefs:
+    - infrastructure
+    name: infrastructure-logs
+    outputRefs:
+    - kafka-open

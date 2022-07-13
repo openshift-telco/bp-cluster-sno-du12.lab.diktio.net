@@ -1,0 +1,36 @@
+{{- range $.Values.cluster.nodes.masters }}
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  name: {{ $.Values.cluster.name }}-{{ .site }}-{{ .name }}
+  #name: {{ .name }}.{{ $.Values.cluster.name }}.{{ $.Values.cluster.domain }}
+  namespace: {{ $.Values.cluster.name }}
+  labels:
+    # InfraEnv to use
+    infraenvs.agent-install.openshift.io: {{ $.Values.cluster.name | quote}}
+  annotations:
+    bmac.agent-install.openshift.io/role: {{ .role | default "worker" }}
+    bmac.agent-install.openshift.io/hostname: "{{ .name }}"
+    #bmac.agent-install.openshift.io/hostname: "{{ .name }}.{{ $.Values.cluster.name }}.{{ $.Values.cluster.domain }}"
+    inspect.metal3.io: disabled
+    #argocd.argoproj.io/sync-wave: "1"
+spec:
+  online: true
+  bootMode: UEFI
+{{- range $index, $int := .interfaces }}
+  {{- if eq $index 0 }}  
+  bootMACAddress: {{ $int.mac }}
+  {{- end }}
+{{- end }}
+  automatedCleaningMode: disabled
+  # Depricated
+  hardwareProfile: unknown
+  rootDeviceHints: 
+    deviceName: {{ .boot_dev_hint | quote }}
+    #hctl: "1:0:0:0"
+  bmc:
+    address: {{ .bmc_address }}
+    credentialsName: bmc-{{ $.Values.cluster.name }}-{{ .site }}-{{ .name }}
+    disableCertificateVerification: True
+---
+{{- end }}

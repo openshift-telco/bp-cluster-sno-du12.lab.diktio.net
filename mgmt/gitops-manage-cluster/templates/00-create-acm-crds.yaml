@@ -1,0 +1,56 @@
+---
+apiVersion: agent.open-cluster-management.io/v1
+kind: KlusterletAddonConfig
+metadata:
+  #annotations:
+  #  argocd.argoproj.io/sync-wave: "2"
+  name: {{ $.Values.cluster.name }}
+  namespace: {{ $.Values.cluster.name }}
+spec:
+  clusterName: {{ $.Values.cluster.name }}
+  clusterNamespace: {{ $.Values.cluster.name }}
+  clusterLabels:
+    cloud: auto-detect
+    vendor: auto-detect
+  applicationManager:
+    enabled: true
+  certPolicyController:
+    enabled: false
+  iamPolicyController:
+    enabled: false
+  policyController:
+    enabled: true
+  searchCollector:
+    enabled: false 
+---
+apiVersion: cluster.open-cluster-management.io/v1
+kind: ManagedCluster
+metadata:
+  #annotations:
+  #  argocd.argoproj.io/sync-wave: "2"
+#  labels:
+#    app.kubernetes.io/instance: clusters
+#    cluster.open-cluster-management.io/clusterset: default
+#    common: "true"
+#    du-profile: v4.10
+#    #feature.open-cluster-management.io/addon-config-policy-controller: available
+#    #feature.open-cluster-management.io/addon-governance-policy-framework: available
+#    #feature.open-cluster-management.io/addon-work-manager: available
+#    group-du-sno: ""
+#    name: {{ $.Values.cluster.name }}
+#    #openshiftVersion: 4.10.13
+#    sites: {{ $.Values.cluster.name }}
+#    ztp-done: ""
+  name: {{ $.Values.cluster.name }}
+spec:
+  hubAcceptsClient: true
+---
+apiVersion: internal.open-cluster-management.io/v1beta1
+kind: ManagedClusterInfo
+metadata:
+  name: {{ $.Values.cluster.name }}
+  namespace: {{ $.Values.cluster.name }}
+spec:
+  #loggingCA: >-
+  #  "PlaceHolderIgnored"
+  masterEndpoint: https://api.{{ $.Values.cluster.name }}.{{ $.Values.global.domain }}:6443

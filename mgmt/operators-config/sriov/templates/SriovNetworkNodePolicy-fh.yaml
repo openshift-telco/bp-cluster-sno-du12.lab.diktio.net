@@ -1,0 +1,17 @@
+---
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetworkNodePolicy
+metadata:
+  name: sriov-nnp-du-fh
+  namespace: openshift-sriov-network-operator
+spec:
+  deviceType: netdevice
+  isRdma: true
+  nicSelector:
+    pfNames:
+    - enp1s0f1
+  nodeSelector:
+    node-role.kubernetes.io/master: ""
+  numVfs: 8
+  priority: 10
+  resourceName: du_fh

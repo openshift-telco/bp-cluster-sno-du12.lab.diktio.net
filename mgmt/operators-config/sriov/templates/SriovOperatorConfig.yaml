@@ -1,0 +1,19 @@
+---
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovOperatorConfig
+metadata:
+  name: default
+  namespace: openshift-sriov-network-operator
+spec:
+  configDaemonNodeSelector:
+    node-role.kubernetes.io/master: ""
+    #ran.openshift.io/sriov: ""
+  enableInjector: true
+  enableOperatorWebhook: true
+  disableDrain: true
+  logLevel: 2
+
+
+
+
+

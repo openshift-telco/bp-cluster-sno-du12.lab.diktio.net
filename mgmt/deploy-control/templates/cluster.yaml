@@ -1,0 +1,25 @@
+---
+apiVersion: hive.openshift.io/v1
+kind: ClusterDeployment
+metadata:
+  #annotations:
+  #  argocd.argoproj.io/sync-wave: "1"
+  name: {{ $.Values.cluster.name }}
+  namespace: {{ $.Values.cluster.name }}
+spec:
+  baseDomain: {{ $.Values.global.domain }}
+  clusterName: {{ $.Values.cluster.name }}
+  controlPlaneConfig:
+    servingCertificates: {}
+  clusterInstallRef:
+    group: extensions.hive.openshift.io
+    kind: AgentClusterInstall
+    name: {{ $.Values.cluster.name }}
+    version: v1beta1
+  platform:
+    agentBareMetal:
+      agentSelector:
+        matchLabels:
+          cluster-name: {{ $.Values.cluster.name }}
+  pullSecretRef:
+    name: {{ $.Values.global.ai.pull_secret_name }}

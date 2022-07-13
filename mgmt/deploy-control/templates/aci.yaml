@@ -1,0 +1,30 @@
+---
+# This is equivalent to a base common profile
+apiVersion: extensions.hive.openshift.io/v1beta1
+kind: AgentClusterInstall
+metadata:
+  name: {{ $.Values.cluster.name }}
+  namespace: {{ $.Values.cluster.name }}
+  annotations:
+    agent-install.openshift.io/install-config-overrides: '{"networking":{"networkType":"OVNKubernetes"}}'
+    #argocd.argoproj.io/sync-wave: "1"
+spec:
+  #apiVIP: '{{ $.Values.cluster.api_vip }}'
+  #ingressVIP: '{{ $.Values.cluster.ingress_vip }}'
+  clusterDeploymentRef:
+    name: {{ $.Values.cluster.name }}
+  imageSetRef:
+    name: {{ coalesce $.Values.cluster.install_mirror_name $.Values.global.mirror.install_mirror_name }}
+  #manifestsConfigMapRef:
+  #  name: {{ $.Values.cluster.name }}
+  networking:
+    machineNetwork:
+      - cidr: {{ $.Values.cluster.machineNetwork | quote }}
+    clusterNetwork:
+      - cidr: {{ $.Values.cluster.clusternetwork.cidr | quote }}
+        hostPrefix: {{ $.Values.cluster.clusternetwork.hostPrefix }}
+    serviceNetwork:
+      -  {{ $.Values.cluster.servicenetwork | quote }}
+  provisionRequirements:
+    controlPlaneAgents: 1
+  sshPublicKey: '{{ coalesce $.Values.cluster.ssh_key $.Values.global.ai.ssh_key }}'
